@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 public class ArticlePage extends JPanel {
     private DatabaseManager dbManager;
     private JTextField titleField;
-    private JTextField imagePathField;
+    private JTextField imagePathField; // Declare this field
     private JTextArea contentArea;
     private NewsApplication app;
     private Image backgroundImage;
@@ -17,7 +17,7 @@ public class ArticlePage extends JPanel {
         backgroundImage = new ImageIcon("src/newArticalBackground.jpg").getImage(); // Load image
         this.dbManager = dbManager;
 
-        setLayout(new GridBagLayout()); // Use BoxLayout
+        setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(0, 10, 10, 10); // Padding around components
@@ -25,8 +25,8 @@ public class ArticlePage extends JPanel {
         gbc.gridx = 0;
 
         JLabel titleLabel = new JLabel("Title:");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Set the font with a specific family
-        titleLabel.setForeground(Color.white); // Set the text color
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setForeground(Color.white);
         add(titleLabel, gbc);
 
         titleField = new JTextField();
@@ -35,36 +35,41 @@ public class ArticlePage extends JPanel {
         add(titleField, gbc);
 
         JLabel imageLabel = new JLabel("Image Path:");
-        imageLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Set the font with a specific family
-        imageLabel.setForeground(Color.white); // Set the text color
+        imageLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        imageLabel.setForeground(Color.white);
         gbc.gridy = 2;
         add(imageLabel, gbc);
+
+        // Create a text field for the image path
+        imagePathField = new JTextField();
+        imagePathField.setPreferredSize(new Dimension(200, 30));
+        imagePathField.setEditable(false); // Make it non-editable
+        gbc.gridy = 3;
+        add(imagePathField, gbc);
 
         // Add file picker button
         JButton filePickerButton = new JButton("Select Image");
         filePickerButton.addActionListener(e -> chooseImageFile());
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         add(filePickerButton, gbc);
 
-
         JLabel contentLabel = new JLabel("The Content of The Article:");
-        contentLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Set the font with a specific family
-        contentLabel.setForeground(Color.white); // Set the text color
-        gbc.gridy = 4;
+        contentLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        contentLabel.setForeground(Color.white);
+        gbc.gridy = 5;
         add(contentLabel, gbc);
 
         contentArea = new JTextArea();
         contentArea.setLineWrap(true);
         contentArea.setWrapStyleWord(true);
         contentArea.setPreferredSize(new Dimension(400, 100));
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         add(contentArea, gbc);
-
 
         // Create a panel for buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Center buttons
-        buttonPanel.setAlignmentX(Component.BOTTOM_ALIGNMENT); // Center the panel
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setAlignmentX(Component.BOTTOM_ALIGNMENT);
         buttonPanel.setBackground(Color.lightGray);
 
         JButton uploadButton = new JButton("Upload Article");
@@ -76,7 +81,7 @@ public class ArticlePage extends JPanel {
         buttonPanel.add(uploadButton);
         buttonPanel.add(backButton);
 
-        gbc.gridy = 6;
+        gbc.gridy = 7; // Adjust the row for the button panel
         add(buttonPanel, gbc);
     }
 
@@ -84,7 +89,7 @@ public class ArticlePage extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this); // Draw background image
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
     }
 
@@ -98,18 +103,17 @@ public class ArticlePage extends JPanel {
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             String imagePath = fileChooser.getSelectedFile().getAbsolutePath();
-            imagePathField.setText(imagePath);
+            imagePathField.setText(imagePath); // Set the path to the imagePathField
         }
     }
 
     private class UploadAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             String title = titleField.getText();
-            String imagePath = imagePathField.getText();
+            String imagePath = imagePathField.getText(); // Get the path from the text field
             String content = contentArea.getText();
             NewsArticle article = new NewsArticle(title, imagePath, content);
             dbManager.addArticle(article);
-            // Optionally, refresh the news list or show success message
         }
     }
 
@@ -121,4 +125,3 @@ public class ArticlePage extends JPanel {
         app.frame.repaint();
     }
 }
-
