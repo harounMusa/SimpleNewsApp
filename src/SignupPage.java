@@ -3,13 +3,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LoginPage extends JPanel {
+public class SignupPage extends JPanel {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private NewsApplication app;
     private Image backgroundImage;
 
-    public LoginPage(NewsApplication app) {
+    public SignupPage(NewsApplication app) {
         this.app = app;
         app.frame.setResizable(false);
         backgroundImage = new ImageIcon("src/login BackGrond.jpg").getImage(); // Load image
@@ -22,6 +22,8 @@ public class LoginPage extends JPanel {
 
         gbc.gridy = 0;
         gbc.gridx = 0;
+//        JLabel usernameLabel = new JLabel("User name:");
+//        add(usernameLabel, gbc);
         JLabel usernameLabel = new JLabel("User name:");
         usernameLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Set the font with a specific family
         usernameLabel.setForeground(Color.white); // Set the text color
@@ -43,64 +45,48 @@ public class LoginPage extends JPanel {
         gbc.gridy = 3;
         add(passwordField, gbc);
 
-        // Button for Show the Main page
-        JButton loginButton = new JButton("Login");
-        loginButton.addActionListener(new LoginAction());
-        gbc.gridy = 4;
-        add(loginButton, gbc);
-
-        // Button for navigating to Signup Page
         JButton signupButton = new JButton("Sign Up");
-        signupButton.addActionListener(e -> showSignupPage());
-        gbc.gridy = 5; // Place below the terms button
-        gbc.anchor = GridBagConstraints.SOUTHEAST; // Align to bottom right
+        signupButton.addActionListener(new SignupAction());
+        gbc.gridy = 4;
         add(signupButton, gbc);
 
-        // Button for Terms and Conditions
-        JButton termsButton = new JButton("Terms and Conditions");
-        termsButton.addActionListener(e -> showTermsAndConditions());
-        gbc.gridy = 6;
+        // Button for navigating to login Page
+        JButton loginButton = new JButton("Back to login");
+        loginButton.addActionListener(e -> showLoginPage());
+        gbc.gridy = 5; // Place below the terms button
         gbc.anchor = GridBagConstraints.SOUTHEAST; // Align to bottom right
-        add(termsButton, gbc);
+        add(loginButton, gbc);
     }
-
+    private void showLoginPage(){
+        // Navigate to Login Page
+        LoginPage loginPage = new LoginPage(app);
+        app.frame.getContentPane().removeAll();
+        app.frame.add(loginPage);
+        app.frame.revalidate();
+        app.frame.repaint();
+    }
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this); // Draw background image
         }
+
     }
 
-    private void showTermsAndConditions() {
-        // Navigate to Terms and Conditions Page
-        TermsAndConditionsPage termsPage = new TermsAndConditionsPage(app);
-        app.frame.getContentPane().removeAll();
-        app.frame.add(termsPage);
-        app.frame.revalidate();
-        app.frame.repaint();
-    }
-    private void showSignupPage() {
-        // Navigate to Signup Page
-        SignupPage signupPage = new SignupPage(app);
-        app.frame.getContentPane().removeAll();
-        app.frame.add(signupPage);
-        app.frame.revalidate();
-        app.frame.repaint();
-    }
 
-    private class LoginAction implements ActionListener {
+    private class SignupAction implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
 
-            if (app.dbManager.authenticateUser(username, password)) {
-                app.showMainPage();
-            } else {
-                JOptionPane.showMessageDialog(app.frame, "Invalid credentials. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            // Add your user creation logic here
+            app.dbManager.addUser(username, password);
+
+            JOptionPane.showMessageDialog(app.frame, "Signup successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            app.showMainPage();
+
+            // Navigate back to the login page or main page as necessary
         }
     }
 }
-
-
